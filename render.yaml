@@ -1,0 +1,23 @@
+﻿services:
+  - type: web
+    name: api-football-draw-predictor
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: DAILY_REQUEST_LIMIT
+        value: 7500
+      - key: CIRCUIT_BREAKER_MARGIN
+        value: 50
+      - key: TOKEN_A
+        sync: false
+      - key: TOKEN_B
+        sync: false
+      - key: TOKEN_C
+        sync: false
+      - key: TOKEN_D
+        sync: false
+      - key: TOKEN_E
+        sync: false

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>API-Football Draw Predictor & Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1329;
+      --card: #152243;
+      --border: #233664;
+      --primary: #38bdf8;
+      --accent: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    body {
+      background-color: var(--bg);
+      color: #f8fafc;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    .custom-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body class="p-4 md:p-6 antialiased custom-scroll">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- HEADER / STATUS DE CUOTA -->
+    <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-xl">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
+            API-Football v3 &bull; Metodología Cuantitativa PFC
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
+            <span>⚽</span> Sistema de Pronóstico y Simulación de Empates
+          </h1>
+          <p class="text-slate-400 text-xs sm:text-sm mt-1">
+            217 Ligas configuradas &bull; Vías A, B, C, D del Usuario + Vías E (J48), F (Bayes), G (EV+) y PIDO
+          </p>
+        </div>
+
+        <!-- MONITOR DE CUOTA (7500 LLAMADAS) -->
+        <div class="bg-slate-900/80 border border-[var(--border)] p-4 rounded-xl flex items-center gap-5">
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Presupuesto Diario API</div>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="quota-calls-today" class="text-2xl font-black text-cyan-400">0</span>
+              <span class="text-xs text-slate-400">/ 7.500 llamadas</span>
+            </div>
+            <div class="w-44 bg-slate-800 h-2 rounded-full overflow-hidden mt-1.5">
+              <div id="quota-progress-bar" class="bg-cyan-500 h-full w-0 transition-all duration-500"></div>
+            </div>
+          </div>
+          <div class="border-l border-slate-800 pl-4 space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-slate-300">Restantes:</span>
+              <span id="quota-remaining" class="font-mono font-bold text-white">7.500</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="circuit-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-slate-300">Circuito:</span>
+              <span id="circuit-text" class="font-semibold text-emerald-400">Normal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS NAVEGACIÓN -->
+      <div class="flex gap-4 border-t border-[var(--border)] mt-5 pt-3 overflow-x-auto text-sm font-medium">
+        <button class="nav-tab active text-cyan-400 border-b-2 border-cyan-400 pb-2 whitespace-nowrap" data-tab="tab-simular">
+          🎲 Simular Ligas (Seleccion.csv)
+        </button>
+        <button class="nav-tab text-slate-400 hover:text-white border-b-2 border-transparent pb-2 whitespace-nowrap" data-tab="tab-criterios">
+          ⚙️ Criterios y Selección de Partidos
+        </button>
+        <button class="nav-tab text-slate-400 hover:text-white border-b-2 border-transparent pb-2 whitespace-nowrap" data-tab="tab-pido">
+          🧮 Calculadora Matemática PIDO
+        </button>
+        <button class="nav-tab text-slate-400 hover:text-white border-b-2 border-transparent pb-2 whitespace-nowrap" data-tab="tab-api-ops">
+          📡 Operaciones API & Consumo
+        </button>
+      </div>
+    </header>
+
+    <!-- TAB 1: SIMULADOR DE LIGAS -->
+    <section id="tab-simular" class="tab-pane space-y-6">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-white text-base">Simulación de Empates sobre las Ligas del Fichero Seleccion.csv</h3>
+            <p class="text-xs text-slate-400">Evalúa el comportamiento de los empates a lo largo de 12 semanas con los criterios activos</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <select id="sim-league-select" class="bg-slate-900 border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-white max-w-xs">
+              <option value="39">Premier League (England) [ID 39]</option>
+            </select>
+            <button id="btn-run-simulation" class="px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap">
+              <span>⚡</span> Ejecutar Simulación
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS SIMULACIÓN -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+          <div class="bg-slate-900/90 border border-[var(--border)] p-4 rounded-xl">
+            <span class="text-[10px] text-slate-400 uppercase font-semibold block">Acierto Doble Oportunidad (PIDO)</span>
+            <span id="sim-kpi-pido-hr" class="text-2xl font-black text-cyan-400">86.8%</span>
+            <span class="text-[11px] text-emerald-400 block mt-0.5">Obj. Esperado PFC: 85.0%</span>
+          </div>
+          <div class="bg-slate-900/90 border border-[var(--border)] p-4 rounded-xl">
+            <span class="text-[10px] text-slate-400 uppercase font-semibold block">Acierto Empate Directo (J48/Consenso)</span>
+            <span id="sim-kpi-draw-hr" class="text-2xl font-black text-amber-300">31.6%</span>
+            <span id="sim-kpi-draw-roi" class="text-[11px] text-emerald-400 block mt-0.5">ROI: +20.5%</span>
+          </div>
+          <div class="bg-slate-900/90 border border-[var(--border)] p-4 rounded-xl">
+            <span class="text-[10px] text-slate-400 uppercase font-semibold block">Empates Ocurridos en Liga</span>
+            <span id="sim-kpi-draws-count" class="text-2xl font-black text-white">30 / 120</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Frecuencia real: 25.0%</span>
+          </div>
+          <div class="bg-slate-900/90 border border-[var(--border)] p-4 rounded-xl">
+            <span class="text-[10px] text-slate-400 uppercase font-semibold block">Filtro de Riesgo (Descartados)</span>
+            <span id="sim-kpi-filtered" class="text-2xl font-black text-purple-300">52 / 120</span>
+            <span class="text-[11px] text-purple-400 block mt-0.5">43.3% nulos por discrepancia</span>
+          </div>
+        </div>
+
+        <!-- GRÁFICA DE EVOLUCIÓN ACUMULADA -->
+        <div class="bg-slate-900/50 p-4 rounded-xl border border-[var(--border)]">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-bold text-white">Evolución Acumulada de Aciertos vs Objetivos PFC</span>
+            <div class="flex gap-4 text-[11px] text-slate-400">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> PIDO (Doble Op.)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-1 bg-emerald-400"></span> Obj. Esperado (85%)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-1 bg-red-400 border-b border-dashed"></span> Obj. Mínimo (66.6%)</span>
+            </div>
+          </div>
+          <div class="h-56 relative w-full">
+            <canvas id="sim-chart" class="w-full h-full"></canvas>
+          </div>
+        </div>
+
+        <!-- TABLA SEMANAL DEL PFC (TABLA 19) -->
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900 text-slate-400 border-b border-[var(--border)]">
+                <th class="py-2 px-3 text-center">Semana</th>
+                <th class="py-2 px-3 text-center">Con Predicción</th>
+                <th class="py-2 px-3 text-center">Sin Predicción</th>
+                <th class="py-2 px-3 text-center">Aciertos Simples</th>
+                <th class="py-2 px-3 text-center">% Simples</th>
+                <th class="py-2 px-3 text-center bg-cyan-950/40 text-cyan-300 font-bold">Aciertos Doble Op.</th>
+                <th class="py-2 px-3 text-center bg-cyan-950/40 text-cyan-300 font-bold">% Doble Op.</th>
+                <th class="py-2 px-3 text-right">PnL PIDO (€)</th>
+                <th class="py-2 px-3 text-right">PnL Empate Directo (€)</th>
+              </tr>
+            </thead>
+            <tbody id="sim-table-body" class="divide-y divide-[var(--border)]">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CONFIGURACIÓN DE CRITERIOS MULTICRITERIO -->
+    <section id="tab-criterios" class="tab-pane hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- CRITERIOS DEL USUARIO (SCRIPT 003) -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <span>📋</span> Criterios Tradicionales del Usuario (Script 003)
+          </h3>
+          
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)] space-y-2">
+              <label class="flex items-center gap-2 font-semibold text-cyan-300">
+                <input id="crit-via-a" type="checkbox" checked class="rounded bg-slate-800">
+                Vía A: Cuotas + Medias de Goles + Under 2.5
+              </label>
+              <div class="grid grid-cols-3 gap-2 pt-1">
+                <div>
+                  <span class="text-slate-400 block mb-0.5">Cuota X máx:</span>
+                  <input id="crit-cuota-x" type="number" step="0.05" value="3.20" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                </div>
+                <div>
+                  <span class="text-slate-400 block mb-0.5">Media goles máx:</span>
+                  <input id="crit-goles" type="number" step="0.05" value="1.20" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                </div>
+                <div>
+                  <span class="text-slate-400 block mb-0.5">Cuota U2.5 máx:</span>
+                  <input id="crit-u25" type="number" step="0.05" value="2.00" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-cyan-300">
+                <input id="crit-via-b" type="checkbox" checked class="rounded bg-slate-800">
+                Vía B: Pronóstico API-Football (-1.5 / -0.5)
+              </label>
+              <p class="text-slate-400 text-[11px] mt-1">Reutiliza Cuota X y goles de Vía A + predicción bajo marcador.</p>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-cyan-300">
+                <input id="crit-via-c" type="checkbox" checked class="rounded bg-slate-800">
+                Vía C: Racha Actual de Empates Consecutivos
+              </label>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="text-slate-400">Mínimo empates seguidos:</span>
+                <input id="crit-racha" type="number" value="3" min="1" max="10" class="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-cyan-300">
+                <input id="crit-via-d" type="checkbox" checked class="rounded bg-slate-800">
+                Vía D: Resultado Habitual en Últimos 5 Partidos
+              </label>
+              <div class="grid grid-cols-2 gap-2 mt-2">
+                <div>
+                  <span class="text-slate-400 block mb-0.5">Marcador buscado:</span>
+                  <input id="crit-score" type="text" value="0-0" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                </div>
+                <div>
+                  <span class="text-slate-400 block mb-0.5">Jornadas mínimas:</span>
+                  <input id="crit-jornadas" type="number" value="4" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-red-950/20 border border-red-900/40 rounded-xl">
+              <label class="flex items-center gap-2 font-semibold text-red-300">
+                <input id="crit-filter-5" type="checkbox" checked class="rounded bg-slate-800">
+                Filtro Obligatorio: Descartar si 0 empates en últimos 5
+              </label>
+              <p class="text-slate-400 text-[11px] mt-1">Excluye partidos donde el local no empató en últimos 5 en casa o el visitante fuera.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRITERIOS CUANTITATIVOS DEL PFC -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <span>🧠</span> Criterios Cuantitativos Sumados (PFC Valera, 2013)
+          </h3>
+
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-emerald-300">
+                <input id="crit-via-j48" type="checkbox" checked class="rounded bg-slate-800">
+                Vía E: Activación de Rama de Empate en Árboles J48 (C4.5)
+              </label>
+              <p class="text-slate-400 text-[11px] mt-1">
+                Aplica la regla de Premier League (2.20 &lt; CuotaL &le; 5.25), Competición de Liga (visitante TRANQ/MEDIA) y Serie A.
+              </p>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-emerald-300">
+                <input id="crit-via-bayes" type="checkbox" checked class="rounded bg-slate-800">
+                Vía F: Umbral de Probabilidad Bayesiana P(X)
+              </label>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="text-slate-400">Probabilidad mínima condicional:</span>
+                <input id="crit-bayes-prob" type="number" step="0.02" value="0.28" min="0.15" max="0.50" class="w-20 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white">
+                <span class="text-slate-500">(28% equivale a cuotas justas &lt; 3.57)</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-[var(--border)]">
+              <label class="flex items-center gap-2 font-semibold text-emerald-300">
+                <input id="crit-via-ev" type="checkbox" checked class="rounded bg-slate-800">
+                Vía G: Apuesta de Valor Matemático EV+ al Empate
+              </label>
+              <p class="text-slate-400 text-[11px] mt-1">
+                Filtra partidos donde P(X) &times; CuotaX &gt; 1.05 (ventaja matemática sobre la casa superior al 5%).
+              </p>
+            </div>
+
+            <div class="p-4 bg-cyan-950/30 border border-cyan-800/40 rounded-xl">
+              <span class="font-bold text-cyan-300 block mb-1">Estrategia de Explotación Recomendada:</span>
+              <p class="text-slate-300 text-xs leading-relaxed">
+                El sistema aplicará <strong>PIDO (Doble Oportunidad con reparto exacto)</strong> para partidos de consenso y <strong>Empate Directo</strong> cuando se activen las ramas de empate J48 o el filtro EV+.
+              </p>
+            </div>
+
+            <button id="btn-save-criteria" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg transition-all text-xs">
+              💾 Guardar y Aplicar Criterios al Selector
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: CALCULADORA PIDO -->
+    <section id="tab-pido" class="tab-pane hidden space-y-6">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm max-w-2xl mx-auto space-y-4">
+        <h3 class="font-bold text-white text-base">Calculadora Matemática PIDO (PFC Pág. 125)</h3>
+        <p class="text-xs text-slate-400">Introduce cualquier cuota para ver cómo se garantiza el mismo beneficio en victoria o empate.</p>
+        
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Cuota Pick (1 o 2)</label>
+            <input id="pido-q-pick" type="number" step="0.05" value="1.50" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white font-mono text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Cuota Empate (X)</label>
+            <input id="pido-q-x" type="number" step="0.05" value="3.30" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white font-mono text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Stake (€)</label>
+            <input id="pido-stake" type="number" step="0.5" value="1.00" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-white font-mono text-sm">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3 bg-cyan-950/40 border border-cyan-800 rounded-lg">
+            <span class="text-cyan-400 font-semibold block">Apuesta al Pick:</span>
+            <span id="pido-res-spick" class="text-lg font-bold text-white">0.6875 €</span>
+            <span id="pido-res-cpick" class="text-slate-400 block">Coef: 68.75%</span>
+          </div>
+          <div class="p-3 bg-amber-950/40 border border-amber-800 rounded-lg">
+            <span class="text-amber-400 font-semibold block">Apuesta al Empate (X):</span>
+            <span id="pido-res-sx" class="text-lg font-bold text-white">0.3125 €</span>
+            <span id="pido-res-cx" class="text-slate-400 block">Coef: 31.25%</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-1.5 text-xs font-mono">
+          <div class="flex justify-between"><span class="text-slate-400">Cuota Efectiva Doble Oportunidad:</span><span id="pido-res-eff" class="text-white font-bold">1.0313</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Retorno idéntico (Pick o X):</span><span id="pido-res-ret" class="text-emerald-400 font-bold">1.0313 €</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Beneficio Neto Garantizado:</span><span id="pido-res-net" class="text-emerald-400 font-bold">+0.0313 € (+3.13%)</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: OPERACIONES API -->
+    <section id="tab-api-ops" class="tab-pane hidden space-y-6">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4">
+        <h3 class="font-bold text-white text-base">Operaciones con API-Football (api-sports.io)</h3>
+        <p class="text-xs text-slate-400">Ejecuta las llamadas respetando estrictamente el presupuesto diario de 7.500 llamadas.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 bg-slate-900 rounded-xl border border-[var(--border)] space-y-2">
+            <span class="font-bold text-cyan-300 block text-sm">1. Sincronizar Ligas (001)</span>
+            <p class="text-slate-400">Descarga partidos de las 217 ligas de Seleccion.csv usando rotación A-E (~217 llamadas).</p>
+            <button id="btn-sync-api" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold rounded border border-cyan-500/30">
+              Sincronizar Ligas
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-900 rounded-xl border border-[var(--border)] space-y-2">
+            <span class="font-bold text-cyan-300 block text-sm">2. Enriquecer Partidos (002)</span>
+            <p class="text-slate-400">Descarga cuotas Bwin y predicciones de los partidos en las próximas 72h (~100 llamadas).</p>
+            <button id="btn-enrich-api" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold rounded border border-cyan-500/30">
+              Enriquecer Cuotas
+            </button>
+          </div>
+
+          <div class="p-4 bg-slate-900 rounded-xl border border-[var(--border)] space-y-2">
+            <span class="font-bold text-cyan-300 block text-sm">3. Verificar Cuota (/status)</span>
+            <p class="text-slate-400">Consulta el estado oficial de consumo en los servidores de API-Sports (Costo 0 llamadas).</p>
+            <button id="btn-check-quota" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold rounded border border-emerald-500/30">
+              Consultar /status
+            </button>
+          </div>
+        </div>
+
+        <div id="api-ops-console" class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 max-h-48 overflow-y-auto custom-scroll">
+          [Sistema listo] Presupuesto diario configurado en 7.500 llamadas.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Navegación de pestañas
+    document.querySelectorAll(".nav-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-tab").forEach(b => {
+          b.classList.remove("active", "text-cyan-400", "border-cyan-400");
+          b.classList.add("text-slate-400", "border-transparent");
+        });
+        btn.classList.add("active", "text-cyan-400", "border-cyan-400");
+        btn.classList.remove("text-slate-400", "border-transparent");
+
+        const target = btn.getAttribute("data-tab");
+        document.querySelectorAll(".tab-pane").forEach(p => p.classList.add("hidden"));
+        document.getElementById(target).classList.remove("hidden");
+      });
+    });
+
+    // Calculadora PIDO
+    function updatePidoCalc() {
+      const qp = parseFloat(document.getElementById("pido-q-pick").value) || 1.5;
+      const qx = parseFloat(document.getElementById("pido-q-x").value) || 3.3;
+      const st = parseFloat(document.getElementById("pido-stake").value) || 1.0;
+
+      const sum = qp + qx;
+      const cp = 1 - (qp / sum);
+      const cx = 1 - (qx / sum);
+      const sp = cp * st;
+      const sx = cx * st;
+      const ret = sp * qp;
+      const eff = (qp * qx) / sum;
+
+      document.getElementById("pido-res-spick").textContent = sp.toFixed(4) + " €";
+      document.getElementById("pido-res-cpick").textContent = `Coef: ${(cp*100).toFixed(1)}%`;
+      document.getElementById("pido-res-sx").textContent = sx.toFixed(4) + " €";
+      document.getElementById("pido-res-cx").textContent = `Coef: ${(cx*100).toFixed(1)}%`;
+      document.getElementById("pido-res-eff").textContent = eff.toFixed(4);
+      document.getElementById("pido-res-ret").textContent = ret.toFixed(4) + " €";
+      document.getElementById("pido-res-net").textContent = `+${(ret - st).toFixed(4)} € (+${((eff - 1)*100).toFixed(2)}%)`;
+    }
+    ["pido-q-pick", "pido-q-x", "pido-stake"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updatePidoCalc);
+    });
+    updatePidoCalc();
+
+    // Actualizar Estado de Cuota
+    async function fetchQuotaStatus() {
+      try {
+        const res = await fetch("/api/quota");
+        const data = await res.json();
+        const calls = data.total_hoy || 0;
+        const lim = data.limite_diario || 7500;
+        const rem = data.restantes || (lim - calls);
+
+        document.getElementById("quota-calls-today").textContent = calls;
+        document.getElementById("quota-remaining").textContent = rem;
+        const pct = Math.min(100, (calls / lim) * 100);
+        document.getElementById("quota-progress-bar").style.width = pct + "%";
+
+        if (data.circuit_breaker) {
+          document.getElementById("circuit-dot").className = "w-2 h-2 rounded-full bg-red-400 animate-pulse";
+          document.getElementById("circuit-text").textContent = "Cerrado (Límite)";
+          document.getElementById("circuit-text").className = "font-semibold text-red-400";
+        }
+      } catch (e) {
+        console.warn("No se pudo contactar endpoint de cuota", e);
+      }
+    }
+    fetchQuotaStatus();
+
+    // Cargar ligas en selector
+    async function loadLeagues() {
+      try {
+        const res = await fetch("/api/leagues");
+        const leagues = await res.json();
+        const sel = document.getElementById("sim-league-select");
+        if (leagues && leagues.length > 0) {
+          sel.innerHTML = "";
+          leagues.slice(0, 50).forEach(l => {
+            const opt = document.createElement("option");
+            opt.value = l.id;
+            opt.textContent = `${l.name} (${l.country}) [ID ${l.id}]`;
+            sel.appendChild(opt);
+          });
+        }
+      } catch (e) {}
+    }
+    loadLeagues();
+
+    // Ejecutar Simulación
+    async function runSimulation() {
+      const lid = document.getElementById("sim-league-select").value;
+      const btn = document.getElementById("btn-run-simulation");
+      btn.textContent = "Simulando...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/simulate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            league_id: lid,
+            num_weeks: 12,
+            matches_per_week: 10,
+            stake_per_bet: 1.0
+          })
+        });
+        const data = await res.json();
+        renderSimResults(data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        btn.textContent = "⚡ Ejecutar Simulación";
+        btn.disabled = false;
+      }
+    }
+    document.getElementById("btn-run-simulation").addEventListener("click", runSimulation);
+
+    function renderSimResults(data) {
+      const strats = data.estrategias;
+      document.getElementById("sim-kpi-pido-hr").textContent = strats.PIDO_Doble_Oportunidad.hit_rate + "%";
+      document.getElementById("sim-kpi-draw-hr").textContent = strats.Empate_Directo_J48.hit_rate + "%";
+      document.getElementById("sim-kpi-draw-roi").textContent = `ROI: ${strats.Empate_Directo_J48.roi_pct >= 0 ? '+' : ''}${strats.Empate_Directo_J48.roi_pct}%`;
+      document.getElementById("sim-kpi-draw-roi").className = `text-[11px] block mt-0.5 ${strats.Empate_Directo_J48.roi_pct >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+      document.getElementById("sim-kpi-draws-count").textContent = `${data.empates_reales} / ${data.total_partidos}`;
+
+      const tbody = document.getElementById("sim-table-body");
+      tbody.innerHTML = "";
+      let cumDO = 0, cumPred = 0;
+      const chartPoints = [];
+
+      data.tabla_semanal.forEach(r => {
+        cumDO += r.aciertos_do;
+        cumPred += r.con_pred;
+        const cumPct = cumPred > 0 ? (cumDO / cumPred * 100) : 0;
+        chartPoints.push(cumPct);
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-800/40";
+        tr.innerHTML = `
+          <td class="py-2 px-3 text-center font-bold text-white">${r.semana}</td>
+          <td class="py-2 px-3 text-center text-cyan-400 font-semibold">${r.con_pred}</td>
+          <td class="py-2 px-3 text-center text-slate-500">${r.sin_pred}</td>
+          <td class="py-2 px-3 text-center text-slate-300">${r.aciertos_simples}</td>
+          <td class="py-2 px-3 text-center font-mono">${r.pct_simples}%</td>
+          <td class="py-2 px-3 text-center bg-cyan-950/20 text-cyan-300 font-bold">${r.aciertos_do}</td>
+          <td class="py-2 px-3 text-center bg-cyan-950/20 text-cyan-300 font-mono font-bold">${r.pct_do}%</td>
+          <td class="py-2 px-3 text-right font-mono ${r.pnl_pido >= 0 ? 'text-emerald-400' : 'text-red-400'}">${r.pnl_pido >= 0 ? '+' : ''}${r.pnl_pido.toFixed(2)}€</td>
+          <td class="py-2 px-3 text-right font-mono ${r.pnl_direct_draw >= 0 ? 'text-emerald-400' : 'text-red-400'}">${r.pnl_direct_draw >= 0 ? '+' : ''}${r.pnl_direct_draw.toFixed(2)}€</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      renderChart(chartPoints);
+    }
+
+    function renderChart(points) {
+      const canvas = document.getElementById("sim-chart");
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const w = rect.width, h = rect.height;
+      const padL = 40, padR = 20, padT = 20, padB = 25;
+      const pw = w - padL - padR, ph = h - padT - padB;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid
+      ctx.strokeStyle = "#1e293b";
+      ctx.fillStyle = "#64748b";
+      ctx.font = "10px monospace";
+      for (let p = 0; p <= 100; p += 20) {
+        const y = padT + ph - (p / 100) * ph;
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
+        ctx.fillText(`${p}%`, 10, y + 3);
+      }
+
+      // Obj esperado 85%
+      const yExp = padT + ph - (85 / 100) * ph;
+      ctx.strokeStyle = "#22c55e"; ctx.setLineDash([5, 3]);
+      ctx.beginPath(); ctx.moveTo(padL, yExp); ctx.lineTo(w - padR, yExp); ctx.stroke();
+
+      // Obj mínimo 66.6%
+      const yMin = padT + ph - (66.6 / 100) * ph;
+      ctx.strokeStyle = "#ef4444"; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, yMin); ctx.lineTo(w - padR, yMin); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Curva
+      if (!points || points.length < 2) return;
+      const step = pw / (points.length - 1);
+      ctx.strokeStyle = "#38bdf8"; ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      points.forEach((pt, i) => {
+        const x = padL + i * step;
+        const y = padT + ph - (pt / 100) * ph;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      points.forEach((pt, i) => {
+        const x = padL + i * step;
+        const y = padT + ph - (pt / 100) * ph;
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#94a3b8"; ctx.fillText(`S${i+1}`, x - 7, h - 8);
+      });
+    }
+
+    // Botones de Operaciones API
+    function logApi(msg) {
+      const c = document.getElementById("api-ops-console");
+      const d = new Date().toLocaleTimeString();
+      c.innerHTML += `<div>[${d}] ${msg}</div>`;
+      c.scrollTop = c.scrollHeight;
+    }
+
+    document.getElementById("btn-check-quota").addEventListener("click", async () => {
+      logApi("Consultando /status (costo 0 llamadas)...");
+      await fetchQuotaStatus();
+      logApi("Cuota sincronizada con éxito.");
+    });
+
+    document.getElementById("btn-sync-api").addEventListener("click", async () => {
+      logApi("Iniciando sincronización de ligas controlada por cuota...");
+      try {
+        const res = await fetch("/api/sync-leagues", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({max_leagues: 10})
+        });
+        const d = await res.json();
+        logApi(`Sincronización finalizada: ${d.ligas_procesadas} ligas, ${d.finalizados_nuevos} nuevos partidos finalizados.`);
+        fetchQuotaStatus();
+      } catch (e) {
+        logApi("Error en sincronización: " + e);
+      }
+    });
+
+    document.getElementById("btn-enrich-api").addEventListener("click", async () => {
+      logApi("Enriqueciendo partidos con cuotas y predicciones...");
+      try {
+        const res = await fetch("/api/enrich-fixtures", { method: "POST" });
+        const d = await res.json();
+        logApi(`Enriquecimiento finalizado: ${d.partidos_enriquecidos || 0} partidos.`);
+        fetchQuotaStatus();
+      } catch (e) {
+        logApi("Error en enriquecimiento: " + e);
+      }
+    });
+
+    // Ejecutar simulación inicial por defecto
+    setTimeout(runSimulation, 200);
+  </script>
+</body>
+</html>

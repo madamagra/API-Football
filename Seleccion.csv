@@ -1,0 +1,218 @@
+﻿Num_request;Id;name;type;country;code;token;orden
+1;39;Premier League;League;England;GB;A;1
+2;41;League One;League;England;GB;B;2
+3;42;League Two;League;England;GB;C;3
+4;43;National League;League;England;GB;D;4
+5;61;Ligue 1;League;France;FR;E;5
+6;62;Ligue 2;League;France;FR;A;6
+7;63;National 1;League;France;FR;B;7
+8;72;Serie B;League;Brazil;BR;C;8
+9;75;Serie C;League;Brazil;BR;D;9
+10;76;Serie D;League;Brazil;BR;E;10
+11;78;Bundesliga;League;Germany;DE;A;11
+12;79;2. Bundesliga;League;Germany;DE;B;12
+13;80;3. Liga;League;Germany;DE;C;13
+14;82;Frauen Bundesliga;League;Germany;DE;D;14
+15;83;Regionalliga - Bayern;League;Germany;DE;E;15
+16;84;Regionalliga - Nord;League;Germany;DE;A;16
+17;85;Regionalliga - Nordost;League;Germany;DE;B;17
+18;86;Regionalliga - SudWest;League;Germany;DE;C;18
+19;87;Regionalliga - West;League;Germany;DE;D;19
+20;89;Eerste Divisie;League;Netherlands;NL;E;20
+21;95;Segunda Liga;League;Portugal;PT;A;21
+22;100;J3 League;League;Japan;JP;B;22
+23;106;Ekstraklasa;League;Poland;PL;C;23
+24;107;I Liga;League;Poland;PL;D;24
+25;109;II Liga - East;League;Poland;PL;E;25
+26;110;Premier League;League;Wales;GB;A;26
+27;122;2nd Division - Group 1;League;Denmark;DK;B;27
+28;123;2nd Division - Group 2;League;Denmark;DK;C;28
+29;129;Primera Nacional;League;Argentina;AR;D;29
+30;131;Primera B Metropolitana;League;Argentina;AR;E;30
+31;132;Primera C;League;Argentina;AR;A;31
+32;133;Primera D;League;Argentina;AR;B;32
+33;136;Serie B;League;Italy;IT;C;33
+34;140;La Liga;League;Spain;ES;D;34
+35;141;Segunda División;League;Spain;ES;E;35
+36;162;Primera División;League;Costa-Rica;CR;A;36
+37;169;Super League;League;China;CN;B;37
+38;170;League One;League;China;CN;C;38
+39;173;Second League;League;Bulgaria;BG;D;39
+40;179;Premiership;League;Scotland;GB;E;40
+41;180;Championship;League;Scotland;GB;A;41
+42;183;League One;League;Scotland;GB;B;42
+43;184;League Two;League;Scotland;GB;E;43
+44;186;Ligue 1;League;Algeria;DZ;E;44
+45;187;Ligue 2;League;Algeria;DZ;A;45
+46;188;A-League;League;Australia;AU;B;46
+47;198;Football League;League;Greece;GR;C;47
+48;200;Botola Pro;League;Morocco;MA;D;48
+49;201;Botola 2;League;Morocco;MA;E;49
+50;203;Süper Lig;League;Turkey;TR;A;50
+51;211;First NL;League;Croatia;HR;B;51
+52;219;2. Liga;League;Austria;AT;C;52
+53;233;Premier League;League;Egypt;EG;D;53
+54;234;Liga Nacional;League;Honduras;HN;E;54
+55;239;Primera A;League;Colombia;CO;A;55
+56;240;Primera B;League;Colombia;CO;B;56
+57;242;Liga Pro;League;Ecuador;EC;E;57
+58;243;Liga Pro Serie B;League;Ecuador;EC;E;58
+59;250;Division Profesional - Apertura;League;Paraguay;PY;A;59
+60;251;Division Intermedia;League;Paraguay;PY;B;60
+61;252;Division Profesional - Clausura;League;Paraguay;PY;C;61
+62;263;Liga de Expansión MX;League;Mexico;MX;D;62
+63;266;Primera B;League;Chile;CL;E;63
+64;276;FKF Premier League;League;Kenya;KE;A;64
+65;277;Super League;League;Kenya;KE;B;65
+66;282;Segunda División;League;Peru;PE;C;66
+67;284;Liga II;League;Romania;RO;D;67
+68;287;Prva Liga;League;Serbia;RS;E;68
+69;288;Premier Soccer League;League;South-Africa;ZA;A;69
+70;289;1st Division;League;South-Africa;ZA;B;70
+71;291;Azadegan League;League;Iran;IR;E;71
+72;293;K League 2;League;South-Korea;KR;E;72
+73;299;Primera División;League;Venezuela;VE;A;73
+74;304;Liga Panameña de Fútbol;League;Panama;PA;B;74
+75;306;Second Division;League;Qatar;QA;C;75
+76;308;Division 1;League;Saudi-Arabia;SA;D;76
+77;311;1st Division;League;Albania;AL;E;77
+78;313;2a Divisió;League;Andorra;AD;A;78
+79;319;2. Division;League;Cyprus;CY;B;79
+80;320;3. Division;League;Cyprus;CY;C;80
+81;322;Premier League;League;Jamaica;JM;D;81
+82;330;Premier League;League;Kuwait;KW;E;82
+83;331;Division 1;League;Kuwait;KW;A;83
+84;339;Liga Nacional;League;Guatemala;GT;B;84
+85;343;First League;League;Armenia;AM;E;85
+86;346;FNL;League;Czech-Republic;CZ;E;86
+87;355;First League;League;Montenegro;ME;A;87
+88;356;Second League;League;Montenegro;ME;B;88
+89;358;First Division;League;Ireland;IE;C;89
+90;362;A Lyga;League;Lithuania;LT;D;90
+91;365;Virsliga;League;Latvia;LV;E;91
+92;368;Premier League;League;Singapore;SG;A;92
+93;370;Primera Division;League;El-Salvador;SV;B;93
+94;372;Second League;League;Macedonia;MK;C;94
+95;374;2. SNL;League;Slovenia;SI;D;95
+96;378;Ligue 1;League;Guinea;GN;E;96
+97;381;HKFA 1st Division;League;Hong-Kong;HK;A;97
+98;382;Liga Leumit;League;Israel;IL;B;98
+99;383;Ligat Ha'al;League;Israel;IL;E;99
+100;392;Challenge League;League;Malta;MT;E;100
+101;395;Liga 1;League;Moldova;MD;A;101
+102;396;Primera Division;League;Nicaragua;NI;B;102
+103;397;Girabola;League;Angola;AO;C;103
+104;400;Super League;League;Zambia;ZM;D;104
+105;401;Premier Soccer League;League;Zimbabwe;ZW;E;105
+106;403;Ligue 1;League;Senegal;SN;A;106
+107;405;National Soccer League;League;Rwanda;RW;B;107
+108;406;Professional League;League;Oman;OM;C;108
+109;408;Premiership;League;Northern-Ireland;GB;D;109
+110;410;C-League;League;Cambodia;KH;E;110
+111;411;Elite One;League;Cameroon;CM;A;111
+112;412;Premier League;League;Botswana;BW;B;112
+113;417;Premier League;League;Bahrain;BH;E;113
+114;419;Premyer Liqa;League;Azerbaidjan;AZ;E;114
+115;423;Ligue 1;League;Burkina-Faso;BF;A;115
+116;424;Ligue 1;League;Congo-DR;CG;B;116
+117;435;Primera División RFEF - Group 1;League;Spain;ES;C;117
+118;436;Primera División RFEF - Group 2;League;Spain;ES;D;118
+119;461;National 3 - Group A;League;France;FR;E;119
+120;462;National 3 - Group B;League;France;FR;A;120
+121;479;Canadian Premier League;League;Canada;CA;B;121
+122;488;U19 Bundesliga;League;Germany;DE;C;122
+123;494;Super League 2;League;Greece;GR;D;123
+124;496;Liga Alef;League;Israel;IL;E;124
+125;542;Iraqi League;League;Iraq;IQ;A;125
+126;552;3. Lig - Group 1;League;Turkey;TR;B;126
+127;570;Premier League;League;Ghana;GH;E;127
+128;584;Premier League;League;Libya;LY;E;128
+129;585;Premier League;League;Uganda;UG;A;129
+130;598;Première Division;League;Mali;ML;B;130
+131;599;1. Liga Classic - Group 1;League;Switzerland;CH;C;131
+132;664;Superliga;League;Kosovo;XK;D;132
+133;681;Campeonato de Portugal Prio - Group E;League;Portugal;PT;E;133
+134;710;Nacional B;League;Bolivia;BO;A;134
+135;711;Segunda División;League;Chile;CL;B;135
+136;736;Elitettan;League;Sweden;SE;C;136
+137;747;Oberliga - Westfalen;League;Germany;DE;D;137
+138;762;Premier League;League;Mauritania;MR;E;138
+139;763;Mauritian League;League;Mauritius;MU;A;139
+140;764;Premier League;League;Mongolia;MN;B;140
+141;780;III Liga - Group 1;League;Poland;PL;E;141
+142;784;Liga III - Serie 1;League;Romania;RO;E;142
+143;813;Elite Two;League;Cameroon;CM;A;143
+144;828;Ligue 2;League;Tunisia;TN;B;144
+145;844;Ligue 1;League;Congo;CD;C;145
+146;845;GFA League;League;Gambia;GM;D;146
+147;846;Somali Premier League;League;Somalia;SO;E;147
+148;861;U20 League;League;Mexico;MX;A;148
+149;870;Premier League;League;Crimea;UA;B;149
+150;872;Liga Premier Serie B;League;Mexico;MX;C;150
+151;875;Segunda División RFEF - Group 1;League;Spain;ES;D;151
+152;887;Second League - Group A;League;Egypt;EG;E;152
+153;906;Reserve League;League;Argentina;AR;A;153
+154;943;Serie C - Girone C;League;Italy;IT;B;154
+155;44;FA WSL;League;England;GB;A;155
+156;49;National League - Play-offs;League;England;GB;B;156
+157;50;National League - North;League;England;GB;C;157
+158;51;National League - South;League;England;GB;D;158
+159;52;Non League Div One - Isthmian North;League;England;GB;E;159
+160;53;Non League Div One - Isthmian South Central;League;England;GB;A;160
+161;54;Non League Div One - Northern West;League;England;GB;B;161
+162;55;Non League Div One - Northern Midlands;League;England;GB;A;162
+163;56;Non League Div One - Southern South;League;England;GB;B;163
+164;57;Non League Div One - Isthmian South East;League;England;GB;C;164
+165;58;Non League Premier - Isthmian;League;England;GB;D;165
+166;59;Non League Premier - Northern;League;England;GB;E;166
+167;60;Non League Premier - Southern South;League;England;GB;A;167
+168;175;Third League - Northeast;League;Bulgaria;BG;B;168
+169;176;Third League - Northwest;League;Bulgaria;BG;A;169
+170;177;Third League - Southeast;League;Bulgaria;BG;B;170
+171;178;Third League - Southwest;League;Bulgaria;BG;C;171
+172;262;Liga MX;League;Mexico;MX;A;172
+173;265;Primera División;League;Chile;CL;B;173
+174;268;Primera División - Apertura;League;Uruguay;UY;A;174
+175;269;Segunda División;League;Uruguay;UY;B;175
+176;270;Primera División - Clausura;League;Uruguay;UY;C;176
+177;278;Super League;League;Malaysia;MY;A;177
+178;279;Premier League;League;Malaysia;MY;B;178
+179;281;Primera División;League;Peru;PE;A;179
+180;290;Persian Gulf Pro League;League;Iran;IR;B;180
+181;300;Segunda División;League;Venezuela;VE;C;181
+182;307;Pro League;League;Saudi-Arabia;SA;A;182
+183;309;Division 2;League;Saudi-Arabia;SA;B;183
+184;310;Superliga;League;Albania;AL;A;184
+185;338;Primera Division;League;Guatemala;GT;B;185
+186;340;V.League 1;League;Vietnam;VN;C;186
+187;344;Primera División;League;Bolivia;BO;A;187
+188;345;Czech Liga;League;Czech-Republic;CZ;B;188
+189;363;Premier League;League;Ethiopia;ET;A;189
+190;426;Serie D - Girone A;League;Italy;IT;B;190
+191;427;Serie D - Girone B;League;Italy;IT;C;191
+192;428;Serie D - Girone C;League;Italy;IT;A;192
+193;429;Serie D - Girone D;League;Italy;IT;B;193
+194;430;Serie D - Girone E;League;Italy;IT;A;194
+195;431;Serie D - Girone F;League;Italy;IT;B;195
+196;432;Serie D - Girone G;League;Italy;IT;C;196
+197;433;Serie D - Girone H;League;Italy;IT;A;197
+198;434;Serie D - Girone I;League;Italy;IT;B;198
+199;475;Paulista - A1;League;Brazil;BR;A;199
+200;476;Paulista - A2;League;Brazil;BR;B;200
+201;477;Gaúcho - 1;League;Brazil;BR;C;201
+202;478;Gaúcho - 2;League;Brazil;BR;A;202
+203;512;2nd Division - Group A;League;Albania;AL;B;203
+204;513;2nd Division - Group B;League;Albania;AL;A;204
+205;515;U21 League 1;League;Algeria;DZ;B;205
+206;565;Liga Primera U20;League;Nicaragua;NI;C;206
+207;566;Ligue A;League;Burundi;BI;A;207
+208;637;V.League 2;League;Vietnam;VN;B;208
+209;642;Curaçao Sekshon Pagá;League;Curacao;CW;A;209
+210;647;Lao League;League;Laos;LA;B;210
+211;673;Liga MX Femenil;League;Mexico;MX;C;211
+212;722;Liga Premier Serie A;League;Mexico;MX;A;212
+213;730;Football League - Highland League;League;Scotland;GB;B;213
+214;731;Football League - Lowland League;League;Scotland;GB;A;214
+215;888;Second League - Group B;League;Egypt;EG;B;215
+216;889;Second League - Group C;League;Egypt;EG;C;216
+217;942;Serie C - Girone B;League;Italy;IT;A;217
